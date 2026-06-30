@@ -1,8 +1,11 @@
 package cl.duoc.review.model;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,11 +31,13 @@ public class Review {
     @Column(name = "review_id")
     private Long reviewId;
 
-    @Column(name = "destination_id", nullable = false)
-    private Long destinationId;
+    @JdbcTypeCode(SqlTypes.CHAR)
+    @Column(name = "destination_id", nullable = false, length = 36)
+    private UUID destinationId;
 
-    @Column(name = "author_user_id", nullable = false)
-    private Long authorUserId;
+    @JdbcTypeCode(SqlTypes.CHAR)
+    @Column(name = "author_user_id", nullable = false, length = 36)
+    private UUID authorUserId;
 
     @Column(name = "rating", nullable = false)
     private Integer rating;
