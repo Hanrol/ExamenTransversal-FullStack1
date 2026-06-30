@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### MY_SQL ###
+/mysql_data/
+
+### Logger ###
+/logs/
+*.log
