@@ -1,11 +1,12 @@
 package cl.duoc.review.dto;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public record ReviewResponseDTO(
         Long reviewId,
-        Long destinationId,
-        Long authorUserId,
+        UUID destinationId,
+        UUID authorUserId,
         Integer rating,
         String comment,
         Boolean active,
