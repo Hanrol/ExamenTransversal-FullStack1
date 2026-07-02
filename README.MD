@@ -1,266 +1,506 @@
-Proyecto de Benjamín Cubillos
-
-
-###### Enunciado del Examen ######
-
-El estudiante debe desarrollar **uno de los siguientes microservicios** e integrarlo a la infraestructura existente (Eureka Server, API Gateway, Login Service, Destination Service y Traveler Service).  
-Cada microservicio debe tener **máximo 3 tablas** y cumplir con los criterios de evaluación establecidos.
-
----
-
-## Opciones de Microservicio
-
-### Opción 1: Microservicio de Itinerario
-- **Descripción:** Permite registrar los lugares que el usuario desea visitar en su viaje.  
-- **Alcance:**  
-  - Se deben clasificar los lugares como **Hoteles, Tours o Sitios Turísticos**.  
-  - El itinerario debe estar asociado a un viaje existente (Traveler Service).  
-- **Ejemplo:**  
-  - Viaje a "Santiago" → Itinerario: Hotel Plaza, Tour Viña Concha y Toro, Cerro San Cristóbal.  
-
----
-
-### Opción 2: Microservicio de Reseñas
-- **Descripción:** Permite registrar reseñas y notas de los lugares visitados.  
-- **Alcance:**  
-  - Cada reseña debe estar asociada a un destino (Destination Service).  
-  - El usuario autenticado (Login Service) debe ser el autor de la reseña.  
-- **Ejemplo:**  
-  - Usuario: Juan Pérez → Reseña: "Hotel Plaza" → Nota: 4/5, Comentario: "Muy buena atención".  
-
----
-
-###### Arquitectura de Microservicios - Proyecto DUOC ######
-
-Este proyecto implementa una arquitectura basada en **Spring Boot + Spring Cloud** con servicios independientes, gestionados mediante **Eureka Server** y expuestos a través de un **API Gateway**.  
-Cada servicio tiene su propia base de datos MySQL, orquestada con **Docker Compose**.
-
----
-
-## Servicios Actuales
-
-### 1. Eureka Server
-- **ArtifactId:** `eurekaserver`
-- **Puerto:** `8761` (por defecto, configurable en `application.yml`)
-- **Tecnologías:**
-  - Spring Boot 4.0.6
-  - Spring Cloud Netflix Eureka Server
-- **Base de datos:** No aplica
-
----
-
-### 2. API Gateway
-- **ArtifactId:** `gateway`
-- **Puerto:** `9999` (habitual, configurable en `application.yml`)
-- **Tecnologías:**
-  - Spring Boot 3.2.5
-  - Spring Cloud Gateway
-  - Eureka Client
-- **Base de datos:** No aplica
-
----
-
-### 3. Login Service
-- **ArtifactId:** `login`
-- **Puerto:** `9000`
-- **Tecnologías:**
-  - Spring Boot 4.0.6
-  - Spring Security + JWT
-  - Spring Data JPA
-  - Flyway (migraciones)
-  - Eureka Client
-  - Swagger (OpenAPI)
-- **Base de datos:** MySQL (`mysql_login`)
-  - Host: `localhost`
-  - Puerto: `3310`
-  - DB: `login`
-  - Usuario: `examen`
-  - Password: `examen123`
-
----
-
-### 4. Destination Service
-- **ArtifactId:** `destination`
-- **Puerto:** `9001`
-- **Tecnologías:**
-  - Spring Boot 4.0.7
-  - Spring Data JPA
-  - Flyway
-  - Spring WebFlux
-  - Spring Security
-  - Eureka Client
-  - Swagger (OpenAPI)
-- **Base de datos:** MySQL (`mysql_destination`)
-  - Host: `localhost`
-  - Puerto: `3311`
-  - DB: `destination`
-  - Usuario: `examen`
-  - Password: `examen123`
-
----
-
-### 5. Traveler Service
-- **ArtifactId:** `traveler`
-- **Puerto:** `9002`
-- **Tecnologías:**
-  - Spring Boot
-  - Spring Data JPA
-  - Spring WebClient (para consumir otros servicios)
-  - Eureka Client
-  - Swagger (OpenAPI)
-- **Base de datos:** MySQL (`mysql_traveler`)
-  - Host: `localhost`
-  - Puerto: `3312`
-  - DB: `traveler`
-  - Usuario: `examen`
-  - Password: `examen123`
-
----
-
-## Bases de Datos (Docker Compose)
-
-- **mysql_login** → puerto `3310`, DB `login`
-- **mysql_destination** → puerto `3311`, DB `destination`
-- **mysql_traveler** → puerto `3312`, DB `traveler`
-
-Cada servicio tiene su propia base de datos aislada, con usuario `examen` y contraseña `examen123`.
-
----
-
-## Flujo General
-
-1. **Eureka Server** registra todos los microservicios.  
-2. **API Gateway** expone las rutas y enruta las peticiones hacia cada servicio.  
-3. **Login Service** gestiona autenticación y generación de tokens JWT.  
-4. **Destination Service** administra destinos y validaciones.  
-5. **Traveler Service** consume Login y Destination para crear y listar viajes.  
-
----
-
-## Estado Actual
-- 5 microservicios activos (Eureka, Gateway, Login, Destination, Traveler).  
-- 3 bases de datos MySQL independientes.  
-- Seguridad basada en **JWT**.  
-- Documentación de APIs con **Swagger/OpenAPI**.  
-
-
-
-###### Checklist de Implementación para el examen ######
-
-1. **Repositorio GitHub**
-   - Subir el proyecto entregado en formato `.rar` a GitHub.  
-   - Compartir como colaborador al correo: `vi.cofref@profesor.duoc.cl`.  
-   - Realizar commits constantes y progresivos para cumplir con **IE 2.5.1**.
-
-2. **Modelado de Base de Datos**
-   - Crear máximo 3 tablas con entidades JPA.  
-   - Definir relaciones simples (OneToMany o ManyToOne).  
-   - Incluir migraciones con **Flyway** para inicializar la base de datos.
-
-3. **Arquitectura CSR**
-   - Implementar **Controller – Service – Repository/Model**.  
-   - Separar responsabilidades en paquetes por capa.  
-   - CRUD completo para las entidades principales.
+# Examen Transversal FullStack 1
 
-4. **Validación y Seguridad**
-   - Todas las respuestas deben usar la estructura `ApiResponse`.  
-   - Validar token mediante `AuthService` en cada endpoint.  
-   - Aplicar **Bean Validation** en DTOs (ejemplo: `@NotNull`, `@Size`, `@Email`).  
+Proyecto de Benjamín Cubillos.
 
-5. **Comunicación entre Microservicios**
-   - El nuevo microservicio debe comunicarse con:  
-     - **Login Service** → Validación de token.  
-     - **Destination Service** → Validación de destino (Reseñas).  
-     - **Traveler Service** → Validación de viaje (Itinerario).  
-   - Usar **WebClient** para consumo de endpoints remotos.  
+Este repositorio implementa una arquitectura de microservicios con Spring Boot, Spring Cloud, Eureka Server, API Gateway, bases de datos MySQL independientes y documentación Swagger/OpenAPI.
 
-6. **Configuración YML**
-   - Definir `application.yml` con:  
-     - Puerto único (ejemplo: `9003`).  
-     - Configuración de DB MySQL (usuario `examen`, password `examen123`).  
-     - Registro en Eureka.  
+Para el examen se eligió la opción 2: Microservicio de Reseñas.
 
-7. **Docker Compose**
-   - Agregar un nuevo servicio MySQL en `docker-compose.yml`.  
-   - Ejemplo:  
-     ```yaml
-     mysql_itinerary:
-       image: mysql:8.0
-       container_name: mysql_itinerary
-       environment:
-         MYSQL_ROOT_PASSWORD: root
-         MYSQL_DATABASE: itinerary
-         MYSQL_USER: examen
-         MYSQL_PASSWORD: examen123
-       ports:
-         - "3313:3306"
-       volumes:
-         - mysql_itinerary_data:/var/lib/mysql
-     ```
-   - Agregar volumen correspondiente.
+## Arquitectura General
 
-8. **API Gateway**
-   - Configurar ruta en `application.yml` del Gateway:  
-     ```yaml
-     spring:
-       cloud:
-         gateway:
-           routes:
-             - id: itinerary
-               uri: lb://itinerary
-               predicates:
-                 - Path=/api/v1/itinerary/**
-     ```
+El sistema está compuesto por los siguientes servicios:
 
-9. **Documentación y Pruebas**
-   - Documentar endpoints con **Swagger**.  
-   - Incluir ejemplos de request/response en la documentación.  
-   - Implementar pruebas unitarias con **Spring Boot Test**.  
+| Servicio | Puerto | Responsabilidad |
+| --- | ---: | --- |
+| `eurekaserver` | 8761 | Discovery service para registrar y descubrir microservicios. |
+| `gateway` | 9999 | Entrada única del sistema y enrutamiento hacia los servicios registrados en Eureka. |
+| `login` | 9000 | Registro, login, generación y validación de token JWT. |
+| `destination` | 9001 | Administración de destinos, categorías y validación de existencia de destinos. |
+| `traveler` | 9002 | Administración de viajes y detalles de viaje. |
+| `review` | 9003 | Administración de reseñas asociadas a destinos y usuarios autenticados. |
+
+El API Gateway usa rutas con `lb://` para resolver servicios mediante Eureka:
+
+| Ruta gateway | Servicio destino |
+| --- | --- |
+| `/api/v1/users/**` | `login` |
+| `/api/v1/destination/**` | `destination` |
+| `/api/v1/traveler/**` | `traveler` |
+| `/api/v1/reviews/**` | `review` |
+
+## Bases de Datos
+
+Cada microservicio con persistencia usa una base de datos MySQL propia:
+
+| Contenedor | Puerto local | Base de datos | Servicio |
+| --- | ---: | --- | --- |
+| `mysql_login` | 3310 | `login` | `login` |
+| `mysql_destination` | 3311 | `destination` | `destination` |
+| `mysql_traveler` | 3312 | `traveler` | `traveler` |
+| `mysql_review` | 3313 | `review` | `review` |
 
-10. **README del Proyecto**
-    - Explicar el modelado de entidades y relaciones (**IE 2.1.3**).  
-    - Explicar el flujo de comunicación entre microservicios (**IE 2.4.2**).  
-    - Explicar aportes personales y commits (**IE 2.5.2**).  
-    - Explicar pruebas unitarias (**IE 3.1.2**).  
-    - Explicar documentación técnica con Swagger (**IE 3.2.2**).  
+Todas las bases de datos usan:
+
+```text
+Usuario: examen
+Password: examen123
+```
+
+La base de datos de `review` se inicializa mediante Flyway en:
+
+```text
+review/src/main/resources/db/migration/V1__create_review_table.sql
+```
+
+## Microservicio Review
+
+El microservicio `review` permite crear, consultar, actualizar y eliminar lógicamente reseñas asociadas a destinos turísticos.
+
+La reseña cumple con las reglas del enunciado:
+
+- Está asociada a un destino existente del `Destination Service`.
+- El autor se obtiene desde el token JWT validado contra el `Login Service`.
+- Todas las respuestas usan la estructura `ApiResponse`.
+- Todos los endpoints validan token mediante el header `Authorization`.
+- Los DTOs aplican Bean Validation.
+- La comunicación remota se realiza con `WebClient`.
+- El servicio se registra en Eureka.
+
+### Modelo de Datos
+
+El microservicio usa una sola tabla, dentro del máximo de 3 tablas solicitado.
+
+Tabla: `reviews`
+
+| Campo | Tipo | Descripción |
+| --- | --- | --- |
+| `review_id` | `BIGINT` | Identificador autoincremental de la reseña. |
+| `destination_id` | `CHAR(36)` | UUID del destino validado en `destination`. |
+| `author_user_id` | `CHAR(36)` | UUID del usuario autenticado validado en `login`. |
+| `rating` | `INT` | Nota de la reseña entre 1 y 5. |
+| `comment` | `VARCHAR(255)` | Comentario opcional de la reseña. |
+| `active` | `BOOLEAN` | Marca para eliminación lógica. |
+| `created_at` | `DATETIME` | Fecha de creación. |
+| `updated_at` | `DATETIME` | Fecha de última actualización. |
+
+La restricción `chk_reviews_rating` asegura en base de datos que `rating` esté entre 1 y 5.
+
+No se crean claves foráneas hacia otros microservicios porque cada servicio mantiene su propia base de datos. La integridad distribuida se resuelve consultando remotamente a `login` y `destination`.
+
+## Estructura CSR
+
+El microservicio `review` usa separación por capas:
+
+```text
+review/src/main/java/cl/duoc/review
+├── client
+│   ├── DestinationClient.java
+│   └── LoginClient.java
+├── config
+│   ├── SecurityConfig.java
+│   └── WebClientConfig.java
+├── controller
+│   └── ReviewController.java
+├── dto
+│   ├── ApiResponse.java
+│   ├── ReviewCreateRequestDTO.java
+│   ├── ReviewResponseDTO.java
+│   ├── ReviewUpdateRequestDTO.java
+│   └── UserDTO.java
+├── exception
+│   └── GlobalExceptionHandler.java
+├── model
+│   └── Review.java
+├── repository
+│   └── ReviewRepository.java
+└── service
+    └── ReviewService.java
+```
+
+Responsabilidades:
+
+- `ReviewController`: expone endpoints REST y documenta Swagger.
+- `ReviewService`: aplica reglas de negocio, validación de token, validación de destino, autorización del autor y eliminación lógica.
+- `ReviewRepository`: acceso a datos con `JpaRepository`.
+- `Review`: entidad JPA mapeada a la tabla `reviews`.
+- `DTOs`: separan entrada y salida del modelo persistente.
+- `LoginClient` y `DestinationClient`: comunicación REST con otros microservicios.
+- `GlobalExceptionHandler`: respuestas consistentes ante errores.
+
+## Endpoints Review
+
+Todos los endpoints usan el prefijo:
+
+```text
+/api/v1/reviews
+```
+
+Todos requieren:
+
+```text
+Authorization: Bearer <token>
+```
+
+| Método | Ruta | Descripción |
+| --- | --- | --- |
+| `POST` | `/api/v1/reviews` | Crea una reseña para un destino existente. |
+| `GET` | `/api/v1/reviews` | Lista reseñas activas. |
+| `GET` | `/api/v1/reviews/{reviewId}` | Obtiene una reseña activa por ID. |
+| `GET` | `/api/v1/reviews/destination/{destinationId}` | Lista reseñas activas de un destino. |
+| `GET` | `/api/v1/reviews/user/{authorUserId}` | Lista reseñas activas de un usuario. |
+| `GET` | `/api/v1/reviews/destination/{destinationId}/average-rating` | Calcula el promedio de calificación de un destino. |
+| `PUT` | `/api/v1/reviews/{reviewId}` | Actualiza una reseña. Solo el autor puede modificarla. |
+| `DELETE` | `/api/v1/reviews/{reviewId}` | Elimina lógicamente una reseña. Solo el autor puede eliminarla. |
+
+### Crear Reseña
+
+Request:
+
+```json
+{
+  "destinationId": "3b3f3937-73c9-11f1-b577-424dc013a170",
+  "rating": 5,
+  "comment": "Excelente destino"
+}
+```
+
+Response:
+
+```json
+{
+  "code": 201,
+  "message": "Reseña creada correctamente",
+  "data": {
+    "reviewId": 1,
+    "destinationId": "3b3f3937-73c9-11f1-b577-424dc013a170",
+    "authorUserId": "85fbfd69-ce3d-4be3-af31-5d02f9841f9a",
+    "rating": 5,
+    "comment": "Excelente destino",
+    "active": true,
+    "createdAt": "2026-07-02T11:59:15.599705",
+    "updatedAt": null
+  }
+}
+```
+
+### Actualizar Reseña
+
+Request:
 
----
+```json
+{
+  "rating": 4,
+  "comment": "Comentario actualizado"
+}
+```
 
- **Importante:**  
-El estudiante o los estudiantes deben elegir **solo una opción (Itinerario o Reseñas)** y cumplir con todos los criterios de evaluación.
+## Validaciones
 
-###### Criterios a evaluar de acuerdo a la rubrica ######
+Los DTOs aplican Bean Validation:
 
-IE 1.1.1 Diseña endpoints REST aplicando principios de arquitectura distribuida, asignando métodos HTTP y nombres semánticos según la responsabilidad del Indicador de Evaluación. 
+`ReviewCreateRequestDTO`
 
-IE 1.2.1 Estructura el microservicio aplicando el patrón CSR (Controller– Service– Repository/Model), con separación real de responsabilidades y paquetes por capa. 
+- `destinationId`: `@NotNull`
+- `rating`: `@NotNull`, `@Min(1)`, `@Max(5)`
+- `comment`: `@Size(max = 255)`
 
-IE 1.3.1 Implementa mecanismos de validación de datos de entrada, asegurando la integridad de la información procesada por el microservicio. 
+`ReviewUpdateRequestDTO`
 
-IE 1.3.2 Aplica estructuras de manejo de para controlar errores y mantener la estabilidad del servicio. 
+- `rating`: `@NotNull`, `@Min(1)`, `@Max(5)`
+- `comment`: `@Size(max = 255)`
 
-IE 2.1.1 Modela esquemas de base de datos normalizados y coherentes con el dominio, definiendo entidades JPA, atributos y relaciones según principios de diseño relacional y desacoplamiento, e integra operaciones CRUD completas conectando repositorios JpaRepository con la capa de servicio y los controladores REST, garantizando retornos JSON consistentes, validaciones aplicadas y funcionamiento estable del flujo interno del microservicio. 
+Además, `ReviewService` valida:
 
-IE 2.2.1 Implementa reglas de negocio y validaciones con Bean Validation en la capa de servicio, asegurando integridad de datos, coherencia del dominio y cumplimiento de restricciones funcionales definidas para el contexto del proyecto. 
+- Token JWT obligatorio.
+- Token JWT válido en `Login Service`.
+- Destino existente en `Destination Service`.
+- Reseña existente y activa.
+- Usuario autenticado como autor para actualizar o eliminar.
 
-IE 2.3.1 Implementa manejo global y específico de excepciones, integrando logs estructurados para trazabilidad del sistema, garantizando respuestas claras, códigos HTTP adecuados y registro de eventos que permitan analizar errores en tiempo de ejecución. 
+## Manejo de Errores
 
-IE 2.4.1 Implementa comunicación REST entre microservicios mediante consumo o exposición de datos remotos, utilizando DTOs, controlando errores remotos y asegurando interoperabilidad completa en los flujos distribuidos del sistema, respetando convenciones REST y coherencia de datos. 
+El servicio centraliza errores en `GlobalExceptionHandler`.
+
+Respuestas relevantes:
+
+| Código | Caso |
+| ---: | --- |
+| 400 | Body inválido, parámetros inválidos o validación Bean Validation fallida. |
+| 401 | Token ausente, inválido o expirado. |
+| 403 | Usuario autenticado no es autor de la reseña. |
+| 404 | Reseña o destino no encontrado. |
+| 502 | Error remoto al consultar otro microservicio. |
+| 503 | Servicio remoto no disponible. |
+| 500 | Error interno no controlado. |
+
+Todas las respuestas de error mantienen la estructura:
+
+```json
+{
+  "code": 400,
+  "message": "Mensaje del error",
+  "data": null
+}
+```
+
+## Comunicación entre Microservicios
+
+`review` consume dos servicios remotos:
+
+### Login Service
+
+Clase: `LoginClient`
+
+Endpoint consumido:
+
+```text
+GET http://login/api/v1/users/validate?token={token}
+```
+
+Uso:
+
+- Se recibe `Authorization: Bearer <token>`.
+- Se limpia el prefijo `Bearer`.
+- Se consulta a `login`.
+- Se obtiene el `UserDTO`.
+- El campo `id` del usuario validado se usa como `authorUserId`.
+
+### Destination Service
+
+Clase: `DestinationClient`
+
+Endpoint consumido:
 
-IE 2.5.1 Gestiona un repositorio GitHub ordenado, con commits técnicos, progresivos y distribuidos equitativamente entre los integrantes. 
+```text
+GET http://destination/api/v1/destination/destinations/exists?id={destinationId}
+```
 
-IE 3.1.1 Desarrolla pruebas unitarias para validar la lógica del microservicio, aplicando correctamente frameworks de testing y asegurando cobertura mínima sobre funciones y reglas de negocio. 
+Uso:
 
-IE 3.2.1 Elabora documentación técnica clara, estructurada y trazable utilizando Swagger, describiendo modelos, parámetros, respuestas, rutas, ejemplos funcionales y comportamiento real del microservicio. 
+- Antes de crear una reseña se valida que el destino exista.
+- Si el destino no existe, `review` responde `404`.
+- Si `destination` responde error remoto, se controla con `502` o `503`.
+
+### WebClient y Eureka
 
-IE 3.3.1 Configura correctamente los archivos YAML, propiedades de entorno, rutas del API Gateway y perfiles, y ejecuta el despliegue del ecosistema de microservicios en entornos locales o remotos (Docker), validando puertos, conexiones, disponibilidad y logs de ejecución, y describiendo el funcionamiento final del sistema distribuido.
+`review` usa `WebClient.Builder` con `@LoadBalanced`, por lo que las URLs `http://login` y `http://destination` se resuelven mediante Eureka.
 
-IE 2.1.3 Explica con claridad el modelado de entidades, relaciones y estructura del microservicio, justificando decisiones técnicas, normalización, consistencia del dominio y coherencia entre capas del patrón CSR. (ARCHIVO README EN EL PROYECTO)
+Archivo:
 
-IE 2.4.2 Explica el flujo de comunicación entre microservicios, demostrando la correcta obtención y uso de información remota, justificando su manejo y su impacto en el flujo del negocio, y realiza cambios en la comunicación remota comprobando la correcta obtención y uso de la información. (ARCHIVO README EN EL PROYECTO)
+```text
+review/src/main/java/cl/duoc/review/config/WebClientConfig.java
+```
 
-IE 2.5.2 Explica su aporte personal al proyecto, justificando commits, tareas asignadas y participación individual en el desarrollo del proyecto semestral, respaldando su relato con evidencia en las herramientas colaborativas utilizadas. (ARCHIVO README EN EL PROYECTO EN CASO DE TRABAJR EN PAREJAS)
+## Configuración
 
-IE 3.1.2 Explica con claridad el funcionamiento de las pruebas unitarias generadas en el proyecto, justificando decisiones técnicas y relacionándolas con el dominio del microservicio, e integra nuevas pruebas unitarias en tiempo acotado, aplicando correctamente la lógica requerida y manteniendo la consistencia del proyecto. (ARCHIVO README EN EL PROYECTO)
+Archivo principal:
 
-IE 3.2.2 Explica la documentación técnica generada con Swagger/OpenAPI, recorriendo rutas, respuestas, modelos y ejemplos, y demostrando consistencia entre la documentación y el comportamiento real del código. (ARCHIVO README EN EL PROYECTO)
+```text
+review/application.yml
+```
+
+Configuración relevante:
+
+```yaml
+spring:
+  application:
+    name: review
+  datasource:
+    url: jdbc:mysql://localhost:3313/review
+    username: examen
+    password: examen123
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+server:
+  port: 9003
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+```
+
+## Docker Compose
+
+El archivo `docker-compose.yml` incluye la base de datos del microservicio:
+
+```yaml
+mysql_review:
+  image: mysql:8.0
+  container_name: mysql_review
+  environment:
+    MYSQL_ROOT_PASSWORD: root
+    MYSQL_DATABASE: review
+    MYSQL_USER: examen
+    MYSQL_PASSWORD: examen123
+  ports:
+    - "3313:3306"
+  volumes:
+    - mysql_review_data:/var/lib/mysql
+```
+
+## API Gateway
+
+El gateway expone `review` en:
+
+```text
+http://localhost:9999/api/v1/reviews/**
+```
+
+Configuración:
+
+```yaml
+- id: review-service
+  uri: lb://review
+  predicates:
+    - Path=/api/v1/reviews/**
+```
+
+## Swagger/OpenAPI
+
+Cada servicio expone Swagger. En `review` está configurado en:
+
+```text
+http://localhost:9003/index.html
+```
+
+También se puede consultar la especificación OpenAPI en:
+
+```text
+http://localhost:9003/v3/api-docs
+```
+
+`ReviewController` usa:
+
+- `@Tag`
+- `@Operation`
+- `@ApiResponses`
+- `@Parameter`
+
+La documentación describe rutas, parámetros, códigos HTTP y comportamiento esperado.
+
+## Pruebas Unitarias
+
+El microservicio `review` incluye pruebas con JUnit y Mockito.
+
+Archivos:
+
+```text
+review/src/test/java/cl/duoc/review/controller/ReviewControllerTest.java
+review/src/test/java/cl/duoc/review/service/ReviewServiceTest.java
+review/src/test/java/cl/duoc/review/ReviewApplicationTests.java
+```
+
+Cobertura funcional:
+
+- Creación de reseña.
+- Listado de reseñas.
+- Consulta por ID.
+- Consulta por destino.
+- Consulta por usuario.
+- Promedio de calificación por destino.
+- Actualización de reseña.
+- Eliminación lógica.
+- Validación de destino inexistente.
+- Validación de usuario no autor.
+- Validación de reseña inexistente.
+- Validación de token en endpoints de lectura.
+
+Comando:
+
+```bash
+cd review
+./mvnw test
+```
+
+En Windows:
+
+```powershell
+cd review
+.\mvnw.cmd test
+```
+
+Resultado verificado:
+
+```text
+Tests run: 20, Failures: 0, Errors: 0
+BUILD SUCCESS
+```
+
+## Colección Postman
+
+El archivo:
+
+```text
+ExamenFullStack1.postman_collection.json
+```
+
+incluye requests para:
+
+- Login.
+- Validación de token.
+- Destinos.
+- Categorías.
+- Relaciones destino-categoría.
+- Viajes.
+- Detalles de viaje.
+- Reseñas.
+
+La colección usa el gateway en:
+
+```text
+http://localhost:9999
+```
+
+Los endpoints protegidos requieren header:
+
+```text
+Authorization: Bearer <token>
+```
+
+## Ejecución Local
+
+1. Levantar bases de datos:
+
+```bash
+docker compose up -d
+```
+
+2. Ejecutar servicios en este orden:
+
+```text
+eurekaserver
+login
+destination
+traveler
+review
+gateway
+```
+
+3. Probar desde Postman usando:
+
+```text
+http://localhost:9999
+```
+
+## Aporte Personal
+
+El trabajo realizado sobre el microservicio `review` incluye:
+
+- Implementación del modelo `Review`.
+- Creación de migración Flyway para la tabla `reviews`.
+- Implementación de DTOs de entrada y salida.
+- Implementación de `ReviewRepository`.
+- Implementación de `ReviewService` con reglas de negocio.
+- Implementación de comunicación remota con `Login Service` y `Destination Service`.
+- Implementación de `ReviewController`.
+- Integración del servicio en Eureka y API Gateway.
+- Configuración de base de datos MySQL en Docker Compose.
+- Documentación Swagger/OpenAPI.
+- Manejo global de excepciones.
+- Pruebas unitarias con JUnit y Mockito.
+- Actualización de colección Postman para probar los endpoints.
