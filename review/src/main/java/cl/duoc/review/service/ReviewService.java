@@ -6,8 +6,10 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import cl.duoc.review.client.DestinationClient;
 import cl.duoc.review.client.LoginClient;
@@ -38,7 +40,7 @@ public class ReviewService {
 
         if (!destinationClient.destinationExists(dto.destinationId(), token)) {
             logger.warn("No se pudo crear la reseña. Destino no existe. ID: {}", dto.destinationId());
-            throw new RuntimeException("El destino indicado no existe");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El destino indicado no existe");
         }
 
         Review review = new Review();
@@ -57,9 +59,10 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReviewResponseDTO> getAllReviews() {
+    public List<ReviewResponseDTO> getAllReviews(String token) {
 
         logger.info("Listando todas las reseñas activas");
+        validateToken(token);
 
         return reviewRepository.findByActiveTrue()
                 .stream()
@@ -68,9 +71,10 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public ReviewResponseDTO getReviewById(Long reviewId) {
+    public ReviewResponseDTO getReviewById(Long reviewId, String token) {
 
         logger.info("Buscando reseña por ID: {}", reviewId);
+        validateToken(token);
 
         Review review = findActiveReviewOrThrow(reviewId);
 
@@ -78,9 +82,10 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReviewResponseDTO> getReviewsByDestination(UUID destinationId) {
+    public List<ReviewResponseDTO> getReviewsByDestination(UUID destinationId, String token) {
 
         logger.info("Buscando reseñas activas para destino ID: {}", destinationId);
+        validateToken(token);
 
         return reviewRepository.findByDestinationIdAndActiveTrue(destinationId)
                 .stream()
@@ -89,9 +94,10 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReviewResponseDTO> getReviewsByAuthor(UUID authorUserId) {
+    public List<ReviewResponseDTO> getReviewsByAuthor(UUID authorUserId, String token) {
 
         logger.info("Buscando reseñas activas para autor ID: {}", authorUserId);
+        validateToken(token);
 
         return reviewRepository.findByAuthorUserIdAndActiveTrue(authorUserId)
                 .stream()
@@ -110,7 +116,7 @@ public class ReviewService {
         if (!review.getAuthorUserId().equals(authenticatedUser.id())) {
             logger.warn("Usuario ID: {} intentó actualizar reseña ID: {} de otro usuario",
                     authenticatedUser.id(), reviewId);
-            throw new RuntimeException("Solo el autor puede actualizar esta reseña");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Solo el autor puede actualizar esta reseña");
         }
 
         review.setRating(dto.rating());
@@ -135,7 +141,7 @@ public class ReviewService {
         if (!review.getAuthorUserId().equals(authenticatedUser.id())) {
             logger.warn("Usuario ID: {} intentó eliminar reseña ID: {} de otro usuario",
                     authenticatedUser.id(), reviewId);
-            throw new RuntimeException("Solo el autor puede eliminar esta reseña");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Solo el autor puede eliminar esta reseña");
         }
 
         review.setActive(false);
@@ -147,9 +153,10 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public Double getAverageRatingByDestination(UUID destinationId) {
+    public Double getAverageRatingByDestination(UUID destinationId, String token) {
 
         logger.info("Calculando promedio de calificación para destino ID: {}", destinationId);
+        validateToken(token);
 
         List<Review> reviews = reviewRepository.findByDestinationIdAndActiveTrue(destinationId);
 
@@ -168,12 +175,12 @@ public class ReviewService {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> {
                     logger.warn("Reseña no encontrada. ID: {}", reviewId);
-                    return new RuntimeException("Reseña no encontrada");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Reseña no encontrada");
                 });
 
         if (!Boolean.TRUE.equals(review.getActive())) {
             logger.warn("Reseña inactiva o eliminada. ID: {}", reviewId);
-            throw new RuntimeException("Reseña no encontrada o inactiva");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Reseña no encontrada o inactiva");
         }
 
         return review;
@@ -182,7 +189,7 @@ public class ReviewService {
     private UserDTO validateToken(String token) {
         if (token == null || token.isBlank()) {
             logger.warn("Token JWT no proporcionado");
-            throw new RuntimeException("Token JWT no proporcionado");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token JWT no proporcionado");
         }
 
         String cleanToken = token.replace("Bearer ", "");
@@ -191,7 +198,7 @@ public class ReviewService {
 
         if (user == null || user.id() == null) {
             logger.warn("Token JWT inválido o sin usuario asociado");
-            throw new RuntimeException("Token JWT inválido o expirado");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token JWT inválido o expirado");
         }
 
         return user;
