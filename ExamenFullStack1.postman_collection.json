@@ -113,6 +113,33 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Listar usuarios",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer "
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:9999/api/v1/users/list",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9999",
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "list"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -168,7 +195,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "http://127.0.0.1:9999/api/v1/destinations/3b3f3937-73c9-11f1-b577-424dc013a170",
+                  "raw": "http://127.0.0.1:9999/api/v1/destination/destinations/3b3f3937-73c9-11f1-b577-424dc013a170",
                   "protocol": "http",
                   "host": [
                     "127",
@@ -180,6 +207,7 @@
                   "path": [
                     "api",
                     "v1",
+                    "destination",
                     "destinations",
                     "3b3f3937-73c9-11f1-b577-424dc013a170"
                   ]
@@ -198,7 +226,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "http://127.0.0.1:9999/api/v1/destinations/exists?id=3b3f3937-73c9-11f1-b577-424dc013a170",
+                  "raw": "http://127.0.0.1:9999/api/v1/destination/destinations/exists?id=3b3f3937-73c9-11f1-b577-424dc013a170",
                   "protocol": "http",
                   "host": [
                     "127",
@@ -210,6 +238,7 @@
                   "path": [
                     "api",
                     "v1",
+                    "destination",
                     "destinations",
                     "exists"
                   ],
@@ -242,7 +271,7 @@
                   "raw": "{\n  \"name\": \"Santiago\",\n  \"country\": \"Chile\",\n  \"description\": \"Capital de Chile\"\n}"
                 },
                 "url": {
-                  "raw": "http://127.0.0.1:9999/api/v1/destinations",
+                  "raw": "http://127.0.0.1:9999/api/v1/destination/destinations",
                   "protocol": "http",
                   "host": [
                     "127",
@@ -254,6 +283,7 @@
                   "path": [
                     "api",
                     "v1",
+                    "destination",
                     "destinations"
                   ]
                 }
@@ -279,7 +309,7 @@
                   "raw": "{\n  \"name\": \"Valparaíso\",\n  \"country\": \"Chile\",\n  \"description\": \"Ciudad portuaria\"\n}"
                 },
                 "url": {
-                  "raw": "http://127.0.0.1:9999/api/v1/destinations/{{destinationId}}",
+                  "raw": "http://127.0.0.1:9999/api/v1/destination/destinations/{{destinationId}}",
                   "protocol": "http",
                   "host": [
                     "127",
@@ -291,6 +321,7 @@
                   "path": [
                     "api",
                     "v1",
+                    "destination",
                     "destinations",
                     "{{destinationId}}"
                   ]
@@ -309,7 +340,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "http://127.0.0.1:9999/api/v1/destinations/{{destinationId}}",
+                  "raw": "http://127.0.0.1:9999/api/v1/destination/destinations/{{destinationId}}",
                   "protocol": "http",
                   "host": [
                     "127",
@@ -321,6 +352,7 @@
                   "path": [
                     "api",
                     "v1",
+                    "destination",
                     "destinations",
                     "{{destinationId}}"
                   ]
@@ -344,7 +376,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "http://127.0.0.1:9999/api/v1/categories",
+                  "raw": "http://127.0.0.1:9999/api/v1/destination/categories",
                   "protocol": "http",
                   "host": [
                     "127",
@@ -356,6 +388,7 @@
                   "path": [
                     "api",
                     "v1",
+                    "destination",
                     "categories"
                   ]
                 }
@@ -373,7 +406,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "http://127.0.0.1:9999/api/v1/categories/{{categoryId}}",
+                  "raw": "http://127.0.0.1:9999/api/v1/destination/categories/{{categoryId}}",
                   "protocol": "http",
                   "host": [
                     "127",
@@ -385,6 +418,7 @@
                   "path": [
                     "api",
                     "v1",
+                    "destination",
                     "categories",
                     "{{categoryId}}"
                   ]
@@ -411,7 +445,7 @@
                   "raw": "{\n  \"name\": \"Ciudad\"\n}"
                 },
                 "url": {
-                  "raw": "http://127.0.0.1:9999/api/v1/categories",
+                  "raw": "http://127.0.0.1:9999/api/v1/destination/categories",
                   "protocol": "http",
                   "host": [
                     "127",
@@ -423,6 +457,7 @@
                   "path": [
                     "api",
                     "v1",
+                    "destination",
                     "categories"
                   ]
                 }
@@ -448,7 +483,7 @@
                   "raw": "{\n  \"name\": \"Playa\"\n}"
                 },
                 "url": {
-                  "raw": "http://127.0.0.1:9999/api/v1/categories/{{categoryId}}",
+                  "raw": "http://127.0.0.1:9999/api/v1/destination/categories/{{categoryId}}",
                   "protocol": "http",
                   "host": [
                     "127",
@@ -460,6 +495,7 @@
                   "path": [
                     "api",
                     "v1",
+                    "destination",
                     "categories",
                     "{{categoryId}}"
                   ]
@@ -478,7 +514,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "http://127.0.0.1:9999/api/v1/categories/{{categoryId}}",
+                  "raw": "http://127.0.0.1:9999/api/v1/destination/categories/{{categoryId}}",
                   "protocol": "http",
                   "host": [
                     "127",
@@ -490,8 +526,118 @@
                   "path": [
                     "api",
                     "v1",
+                    "destination",
                     "categories",
                     "{{categoryId}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Relaciones Destino-Categoría",
+          "item": [
+            {
+              "name": "Crear relación destino-categoría",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer "
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"destinationId\": \"3b3f3937-73c9-11f1-b577-424dc013a170\",\n  \"categoryId\": \"{{categoryId}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://127.0.0.1:9999/api/v1/destination/destination-categories",
+                  "protocol": "http",
+                  "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "1"
+                  ],
+                  "port": "9999",
+                  "path": [
+                    "api",
+                    "v1",
+                    "destination",
+                    "destination-categories"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Listar relaciones destino-categoría",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer "
+                  }
+                ],
+                "url": {
+                  "raw": "http://127.0.0.1:9999/api/v1/destination/destination-categories",
+                  "protocol": "http",
+                  "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "1"
+                  ],
+                  "port": "9999",
+                  "path": [
+                    "api",
+                    "v1",
+                    "destination",
+                    "destination-categories"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Eliminar relación destino-categoría",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer "
+                  }
+                ],
+                "url": {
+                  "raw": "http://127.0.0.1:9999/api/v1/destination/destination-categories/{{destinationCategoryId}}",
+                  "protocol": "http",
+                  "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "1"
+                  ],
+                  "port": "9999",
+                  "path": [
+                    "api",
+                    "v1",
+                    "destination",
+                    "destination-categories",
+                    "{{destinationCategoryId}}"
                   ]
                 }
               },
@@ -559,7 +705,7 @@
                   "host": [
                     "localhost"
                   ],
-                  "port": "9002",
+                  "port": "9999",
                   "path": [
                     "api",
                     "v1",
@@ -601,7 +747,7 @@
                   "host": [
                     "localhost"
                   ],
-                  "port": "9002",
+                  "port": "9999",
                   "path": [
                     "api",
                     "v1",
@@ -628,7 +774,7 @@
                   "host": [
                     "localhost"
                   ],
-                  "port": "9002",
+                  "port": "9999",
                   "path": [
                     "api",
                     "v1",
@@ -641,6 +787,255 @@
               "response": []
             }
           ]
+        }
+      ]
+    },
+    {
+      "name": "ReviewService",
+      "item": [
+        {
+          "name": "Crear reseña",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer "
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"destinationId\": \"3b3f3937-73c9-11f1-b577-424dc013a170\",\n  \"rating\": 5,\n  \"comment\": \"Excelente destino\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:9999/api/v1/reviews",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9999",
+              "path": [
+                "api",
+                "v1",
+                "reviews"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar reseñas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer "
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:9999/api/v1/reviews",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9999",
+              "path": [
+                "api",
+                "v1",
+                "reviews"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener reseña por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer "
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:9999/api/v1/reviews/{{reviewId}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9999",
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "{{reviewId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar reseñas por destino",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer "
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:9999/api/v1/reviews/destination/3b3f3937-73c9-11f1-b577-424dc013a170",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9999",
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "destination",
+                "3b3f3937-73c9-11f1-b577-424dc013a170"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar reseñas por usuario",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer "
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:9999/api/v1/reviews/user/{{authorUserId}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9999",
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "user",
+                "{{authorUserId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Promedio de calificación por destino",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer "
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:9999/api/v1/reviews/destination/3b3f3937-73c9-11f1-b577-424dc013a170/average-rating",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9999",
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "destination",
+                "3b3f3937-73c9-11f1-b577-424dc013a170",
+                "average-rating"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar reseña",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer "
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 4,\n  \"comment\": \"Comentario actualizado\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:9999/api/v1/reviews/{{reviewId}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9999",
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "{{reviewId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar reseña",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer "
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:9999/api/v1/reviews/{{reviewId}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9999",
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "{{reviewId}}"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     }
